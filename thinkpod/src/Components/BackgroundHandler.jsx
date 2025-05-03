@@ -1,10 +1,10 @@
 import React, { useState, useEffect, use } from 'react';
+import axios from 'axios';
 
 /**
  * A class that uses the Pixabay API to fetch all the videos that the website needs for background settings. 
  */
-export default class BackgroundHandler{
-
+class BackgroundHandler{
     static API_KEY = "49493386-996644cb7f2c9f25700dce247";
 
     /**
@@ -142,12 +142,53 @@ export default class BackgroundHandler{
 
 }
 
+const GetSavedBackground = async (token) => {
+  try {
+    const response = await axios.get('https://dummybackend-hcjs.onrender.com/background', {
+      headers: { 
+        Authorization: `Bearer ${token}` 
+      },
+    });
+    return response.data.backgroundPreference;
+  } catch (error) {
+    console.error('Error fetching saved background:', error);
+  }
+};
+  
+const SaveBackground = async (videoUrl, token) => {
+  try {
+    await axios.put('https://dummybackend-hcjs.onrender.com/background', 
+      { backgroundPreference: videoUrl }, 
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.error('Error saving background:', error);
+  }
+};
+
 /**
  * This function changes the current background of the screen based on the current video url state.
  * @param {string} props.videoUrl - The current state of the video url.The original state is the link to the default backgroudn video. 
  * @returns {JSX.Element} A div containing a full-screen looping background video.
  */
-export const ChangeBackground = ({videoUrl})=>{
+const ChangeBackground = ({videoUrl, setVideoUrl, token})=>{
+    useEffect(() => {
+        if (!videoUrl && token) {
+          GetSavedBackground(token)
+            .then((savedVideo) => {
+              if (savedVideo) {
+                setVideoUrl(savedVideo);
+              }
+            })
+            .catch(console.error);
+        }
+      }, [videoUrl, token, setVideoUrl]);
+
     return(
         <div className="relative  w-full h-screen overflow-hidden">
             {videoUrl && (
@@ -163,7 +204,6 @@ export const ChangeBackground = ({videoUrl})=>{
 
 }
 
-
 /**
  * This function displays the right thumbnails in the background selection window based on the theme that the user
  * chooses. It also makes sure that the right video is displayed in the background when the user clicks the 
@@ -173,7 +213,8 @@ export const ChangeBackground = ({videoUrl})=>{
  * @param {string} props.vidOptions - Indicates which theme does the background selection window should show. This changes when user clicks theme icons.
  * @returns 
  */
-export const BackgroundSelection = ({setBackgroundVideo, vidOptions})=>{
+const BackgroundSelection = ({setBackgroundVideo, vidOptions, token})=>{
+
     // Videos-thumbnails pair state arrays. 
     const [videosAndThumbnail, setVideoAndThumbnail] = useState([]);
 
@@ -181,29 +222,37 @@ export const BackgroundSelection = ({setBackgroundVideo, vidOptions})=>{
     useEffect(() => {
         const videoHandler = new BackgroundHandler();
 
-        switch(vidOptions){
-            case "All":
-                vidOptions = videoHandler.getAllThumbnailAndVideos();
-                break;
-            case "Snow":
-                vidOptions= videoHandler.getWinterVideosAndThumbnail();
-                break;
-            case "Ocean":
-                vidOptions = videoHandler.getOceanVideosAndThumbnail();
-                break;
-            case "Cozy":
-                vidOptions = videoHandler.getAmbienceVideosAndThumbnail();
-                break;
-            case "Space":
-                vidOptions = videoHandler.getSpaceVideosAndThumbnail();
-                break;
-        }
+        let fetchPromise;
 
+        switch (vidOptions) {
+            case 'Snow':
+              fetchPromise = videoHandler.getSnowVideosAndThumbnail();
+              break;
+            case 'Ocean':
+              fetchPromise = videoHandler.getOceanVideosAndThumbnail();
+              break;
+            case 'Cozy':
+              fetchPromise = videoHandler.getAmbienceVideosAndThumbnail();
+              break;
+            case 'Space':
+              fetchPromise = videoHandler.getSpaceVideosAndThumbnail();
+              break;
+            default:
+              fetchPromise = videoHandler.getAllThumbnailAndVideos();
+              break;
+          }
+      
         // Makes sure that when vidOption (a Promise) changes, JS waits for it to resolve.
         // On success, update the video and thumbnail state using `setVideoAndThumbnail`.
-        // On failure, log the error to the console.        
-        vidOptions.then(setVideoAndThumbnail).catch(console.error);
+        // On failure, log the error to the console.   
+      
+          fetchPromise.then(setVideoAndThumbnail).catch(console.error);
         }, [vidOptions]);
+      
+        const handleClick = (videoUrl) => {
+          setBackgroundVideo(videoUrl);
+        };
+
 
         return(
             <div className="grid gap-3 md:grid-cols-3 grid-cols-2 cursor-pointer">
@@ -214,11 +263,13 @@ export const BackgroundSelection = ({setBackgroundVideo, vidOptions})=>{
                     src={thumbnailUrl}
                     width={290}
                     height={400}
-                    onClick={()=> setBackgroundVideo(videoUrl)}>
+                    onClick={()=> handleClick(videoUrl)}>
                     </img>
                 ))}   
             </div>
-        );
+        );     
 }
 
+export default BackgroundHandler;
+export { ChangeBackground, BackgroundSelection,GetSavedBackground, SaveBackground};
   
