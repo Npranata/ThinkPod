@@ -70,7 +70,7 @@ export function Timer({ seconds, opacity = 0.5, hidden = false, mode = 'study' }
     return (
         <div className="p-1 flex justify-end font-gruppo">
             <div
-                className="rounded-lg drop-shadow shadow-md p-6 md:w-72 flex flex-col items-center text-2xl md:bot-none "
+                className="rounded-3xl drop-shadow shadow-md p-6 md:w-72 flex flex-col items-center text-2xl md:bot-none "
                 style={{
                     backgroundColor: `rgba(255, 255, 255, ${opacity})`,
                 }}
@@ -89,7 +89,7 @@ export function Timer({ seconds, opacity = 0.5, hidden = false, mode = 'study' }
                         <button
                             onClick={handleStart}
                             role='button'
-                            className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded drop-shadow transition-all duration-200"
+                            className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-3xl drop-shadow transition-all duration-200"
                         >
                             Start
                         </button>
@@ -98,7 +98,7 @@ export function Timer({ seconds, opacity = 0.5, hidden = false, mode = 'study' }
                         <button
                             onClick={handleStop}
                             role='button'
-                            className="bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded drop-shadow transition-all duration-200"
+                            className="bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-3xl drop-shadow transition-all duration-200"
                         >
                             Stop
                         </button>
@@ -106,7 +106,7 @@ export function Timer({ seconds, opacity = 0.5, hidden = false, mode = 'study' }
                     <button
                         onClick={handleReset}
                         role='button'
-                        className="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-8 rounded drop-shadow transition-all duration-200"
+                        className="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-8 rounded-3xl drop-shadow transition-all duration-200"
                     >
                         Reset
                     </button>

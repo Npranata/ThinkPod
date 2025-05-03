@@ -16,6 +16,20 @@ module.exports = {
       },
       fontFamily:{
         gruppo: ['Gruppo']
+      },
+      keyframes:{
+        fadeIn: {
+          '0%': {opacity : '0'},
+          '100%': {opacity : '1'}
+        },
+        fadeOut: {
+          '100%': {opacity : '1'},
+          '0%': {opacity : '0'}
+        }
+      },
+      animation:{
+        fadeIn: 'fadeIn 0.25s ease-in',
+        fadeOut: 'fadeOut 0.5s ease-out'
       }
     },
   },

@@ -8,7 +8,7 @@ import { LuNotepadText } from "react-icons/lu";
 
 export function Navigation({ toggleBgSelector, toggleSpotify, toggleAccountProfile, aboutUs, toggleTimerSettings, toDoList }) {
     return (
-           <nav className="fixed bottom-3 left-1/2 transform -translate-x-1/2 bg-white shadow-md rounded-full px-6 py-3 flex space-x-8 items-center z-50">
+           <nav className="fixed bottom-3 left-1/2 transform -translate-x-1/2 bg-white shadow-md rounded-full px-6 py-3 flex space-x-8 items-center z-50 animate-fadeIn">
                 <button onClick={toggleTimerSettings} className="text-gray-600 hover:text-blue-500">
                     <IoIosTimer className="Toggle_Timer w-6 h-6" alt="Toggle Timer Settings" />
                 </button>
