@@ -144,7 +144,7 @@ class BackgroundHandler{
 
 const GetSavedBackground = async (token) => {
   try {
-    const response = await axios.get('https://dummybackend-hcjs.onrender.com/background', {
+    const response = await axios.get('https://thinkpod-dus5.onrender.com/background', {
       headers: { 
         Authorization: `Bearer ${token}` 
       },
@@ -157,7 +157,7 @@ const GetSavedBackground = async (token) => {
   
 const SaveBackground = async (videoUrl, token) => {
   try {
-    await axios.put('https://dummybackend-hcjs.onrender.com/background', 
+    await axios.put('https://thinkpod-dus5.onrender.com/background', 
       { backgroundPreference: videoUrl }, 
       {
         headers: {

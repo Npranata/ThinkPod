@@ -10,7 +10,7 @@ export function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://dummybackend-hcjs.onrender.com/login', { username, password },{withCredentials: true} );
+      const response = await axios.post('https://thinkpod-dus5.onrender.com/login', { username, password },{withCredentials: true} );
       localStorage.setItem('token', response.data.access_token);
       setLoggedIn(true);
     } catch (error) {
@@ -20,7 +20,7 @@ export function Login() {
 
   const createAccount = async () => {
     try {
-      const response = await axios.post('https://dummybackend-hcjs.onrender.com/createAccount', { username, password},{withCredentials: true});
+      const response = await axios.post('https://thinkpod-dus5.onrender.com/createAccount', { username, password},{withCredentials: true});
       alert('Account created successfully!');
     } catch (error) {
       alert('Account creation failed!');
