@@ -226,7 +226,7 @@ const BackgroundSelection = ({setBackgroundVideo, vidOptions, token})=>{
 
         switch (vidOptions) {
             case 'Snow':
-              fetchPromise = videoHandler.getSnowVideosAndThumbnail();
+              fetchPromise = videoHandler.getWinterVideosAndThumbnail();
               break;
             case 'Ocean':
               fetchPromise = videoHandler.getOceanVideosAndThumbnail();
