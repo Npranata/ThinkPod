@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { Timer } from './Components/Timer.jsx';
 import { Navigation } from './Components/NavBar.jsx';
 import { ChangeBackground, BackgroundSelection,GetSavedBackground, SaveBackground } from './Components/BackgroundHandler.jsx';
@@ -12,7 +12,6 @@ import { ToDoList } from './Components/ToDoList.jsx';
 
 
 function App() {
-
   /*These are states that will be updated in the website.*/
   const [showBackgroundVideo, setBackgroundVideo] = useState(null);
   const [showBackgroundThemeOptions, setBackgroundThemeOptions] = useState("All");
@@ -23,15 +22,45 @@ function App() {
   const [showAboutUs, setAboutUs] = useState(false);
   const [showToDoList, setTodoList] = useState(false);
 
-
   const [showTimerSettings, setShowTimerSettings] = useState(false);
   const [timerVisible, setTimerVisible] = useState(true);
   const [timerOpacity, setTimerOpacity] = useState(0.5);
   const [timerSeconds, setTimerSeconds] = useState(1500);
   
-
   const [mode, setMode] = useState('study');
   const token = localStorage.getItem("token");
+
+  // allows for the user to click anywhere outside the window to have the login pop up disappear
+  const loginRef = useRef();
+  useEffect(() => {
+  const handleClickOutside = (event) =>  {
+    if (loginRef.current && !loginRef.current.contains(event.target)){
+      setAccountProfile(false);
+    }
+  }
+  if(showAccountProfile){
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+  }, [showAccountProfile]);
+
+  const backgroundRef = useRef();
+  useEffect(() => {
+  const handleClickOutside = (event) =>  {
+    if (backgroundRef.current && !backgroundRef.current.contains(event.target)){
+      setShowBgSelector(false);
+    }
+  }
+  if(showBgSelector){
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+  }, [showBgSelector]);
+
 
   useEffect(() => {
     async function loadUserBackground() {
@@ -53,7 +82,6 @@ function App() {
         }
       }
     }
-  
     loadUserBackground();
   }, [token]);
   
@@ -106,13 +134,13 @@ function App() {
 
       {/* Background Selector */}
       {/* Always Display Background */}
-      <ChangeBackground videoUrl={showBackgroundVideo} />
+      <ChangeBackground videoUrl={showBackgroundVideo} setVideoUrl={setBackgroundVideo} token={token} />
       <div
         style={{
           opacity: showBgSelector ? 1 : 0,
           pointerEvents: showBgSelector ? 'auto' : 'none',
         }}>
-        <div className="background_window flex items-center justify-center">
+        <div className="background_window flex items-center justify-center" ref={backgroundRef}>
           <div className="background_setting absolute bg-white font-bold overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] 
              rounded-xl p-5 sm:w-[45%] w-[90%] h-[53%] top-[255px]">
             <div className="ThemeSelector grid grid-flow-col gap-1 md:gap-4 grid-cols-[auto_auto_auto_auto_1fr] md:grid-cols-[auto_auto_auto_auto_1fr]">
@@ -166,7 +194,7 @@ function App() {
         {`fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm 
         ${showAccountProfile ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} 
         transition-opacity duration-300`}>
-        <div className="login_window" >
+        <div className="login_window" ref={loginRef} >
           <Login />
         </div>
       </div>

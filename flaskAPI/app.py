@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, JSON, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash, check_password_hash
 
 #needed to make sure that the environment variables like CLIENT_URL load
 load_dotenv()
@@ -47,7 +48,8 @@ class User(db.Model):
 class Database:
     """ Adding a new user to the database"""
     def createUser(self, username:str, password:str):
-        newUser = User(username=username, password=password)
+        hashed_password = generate_password_hash(password)
+        newUser = User(username=username, password=hashed_password)
         db.session.add(newUser)
         db.session.commit() 
 
@@ -90,7 +92,7 @@ def login():
     password = request.json.get('password', '')
     user = User.query.filter_by(username=username).first()
 
-    if user and user.password == password:
+    if user and check_password_hash(user.password == password):
         access_token = create_access_token(identity=username)
         response = jsonify(access_token=access_token)
         return response
