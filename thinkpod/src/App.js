@@ -1,8 +1,8 @@
 import './App.css';
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Timer } from './Components/Timer.jsx';
 import { Navigation } from './Components/NavBar.jsx';
-import { ChangeBackground, BackgroundSelection,GetSavedBackground, SaveBackground } from './Components/BackgroundHandler.jsx';
+import { ChangeBackground, BackgroundSelection, GetSavedBackground, SaveBackground } from './Components/BackgroundHandler.jsx';
 import BackgroundHandler from './Components/BackgroundHandler.jsx';
 import { FaLightbulb } from "react-icons/fa6";
 import { Login } from './Components/Login.jsx';
@@ -26,40 +26,40 @@ function App() {
   const [timerVisible, setTimerVisible] = useState(true);
   const [timerOpacity, setTimerOpacity] = useState(0.5);
   const [timerSeconds, setTimerSeconds] = useState(1500);
-  
+
   const [mode, setMode] = useState('study');
   const token = localStorage.getItem("token");
 
   // allows for the user to click anywhere outside the window to have the login pop up disappear
   const loginRef = useRef();
   useEffect(() => {
-  const handleClickOutside = (event) =>  {
-    if (loginRef.current && !loginRef.current.contains(event.target)){
-      setAccountProfile(false);
+    const handleClickOutside = (event) => {
+      if (loginRef.current && !loginRef.current.contains(event.target)) {
+        setAccountProfile(false);
+      }
     }
-  }
-  if(showAccountProfile){
-    document.addEventListener("mousedown", handleClickOutside);
-  }
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
+    if (showAccountProfile) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [showAccountProfile]);
 
 
   const backgroundRef = useRef();
   useEffect(() => {
-  const handleClickOutside = (event) =>  {
-    if (backgroundRef.current && !backgroundRef.current.contains(event.target)){
-      setShowBgSelector(false);
+    const handleClickOutside = (event) => {
+      if (backgroundRef.current && !backgroundRef.current.contains(event.target)) {
+        setShowBgSelector(false);
+      }
     }
-  }
-  if(showBgSelector){
-    document.addEventListener("mousedown", handleClickOutside);
-  }
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
+    if (showBgSelector) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [showBgSelector]);
 
 
@@ -85,7 +85,7 @@ function App() {
     }
     loadUserBackground();
   }, [token]);
-  
+
 
   const toggleTimerSettings = () => {
     setShowTimerSettings(prev => !prev);
@@ -94,7 +94,7 @@ function App() {
 
   /* Todo List states */
   const [showTasks, setTasks] = useState([]);
-  const [showCheckMark, setCheckMark] =useState([]);
+  const [showCheckMark, setCheckMark] = useState([]);
 
   return (
     <div className="App h-screen flex flex-col">
@@ -122,7 +122,8 @@ function App() {
 
       {/* Timer Settings */}
       {showTimerSettings && (
-        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
+
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex justify-center items-center rounded-3xl shadow-xl animate-fadeIn">
           <TimerSettings
             setTimerVisible={setTimerVisible}
             setTimerOpacity={setTimerOpacity}
@@ -137,6 +138,7 @@ function App() {
       {/* Always Display Background */}
       <ChangeBackground videoUrl={showBackgroundVideo} setVideoUrl={setBackgroundVideo} token={token} />
       <div
+        className={`transition-opacity duration-300 ${showBgSelector ? 'animate-fadeIn' : ''}`}
         style={{
           opacity: showBgSelector ? 1 : 0,
           pointerEvents: showBgSelector ? 'auto' : 'none',
@@ -175,7 +177,7 @@ function App() {
 
       {/* Spotify Embed */}
       <div
-        className="fixed bottom-0 md:left-0 left-1/2 md:transform-none -translate-x-1/2 md:translate-x-0 "
+        className="fixed bottom-0 md:left-0 left-1/2 md:transform-none -translate-x-1/2 md:translate-x-0 animate-fadeIn"
         style={{
           display: showSpotify ? 'block' : 'none',
           pointerEvents: showSpotify ? 'auto' : 'none',
@@ -199,7 +201,7 @@ function App() {
           <Login />
         </div>
       </div>
-      
+
       {/* About Us Popup*/}
       <div className=
         {`fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm
@@ -208,15 +210,15 @@ function App() {
         <AboutUs />
       </div>
 
-      {/* Todo List  Popup*/}
+      {/* Todo List Popup*/}
       {showToDoList && (
-         <div className='fixed bottom-20 sm:left-[60%] left-[40%] z-49'> 
-           <ToDoList showTasks={showTasks} setTasks={setTasks} showCheckMark={showCheckMark} setCheckMark={setCheckMark}/>
-         </div>
+        <div className='fixed bottom-20 sm:left-[60%] left-[40%] z-49'>
+          <ToDoList showTasks={showTasks} setTasks={setTasks} showCheckMark={showCheckMark} setCheckMark={setCheckMark} />
+        </div>
       )}
 
       {/* Navigation Bar */}
-      <Navigation toggleTimer={() => setShowTimer(prev => !prev)} toggleBgSelector={() => setShowBgSelector(prev => !prev)} toggleSpotify={() => setSpotify(prev => !prev)} toggleAccountProfile={() => setAccountProfile(prev => !prev)} aboutUs={() => setAboutUs(prev => !prev)} toggleTimerSettings={toggleTimerSettings} toDoList={()=> setTodoList(prev=> !prev)}/>
+      <Navigation toggleTimer={() => setShowTimer(prev => !prev)} toggleBgSelector={() => setShowBgSelector(prev => !prev)} toggleSpotify={() => setSpotify(prev => !prev)} toggleAccountProfile={() => setAccountProfile(prev => !prev)} aboutUs={() => setAboutUs(prev => !prev)} toggleTimerSettings={toggleTimerSettings} toDoList={() => setTodoList(prev => !prev)} />
     </div>
   );
 }

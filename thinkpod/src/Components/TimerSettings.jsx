@@ -17,7 +17,7 @@ export function TimerSettings({ setTimerVisible, setTimerSeconds, setTimerOpacit
         setHours(h);
         setMinutes(m);
         setSeconds(s);
-    }, [mode, studySeconds, breakSeconds]);
+    }, [mode]);
 
     const applySettings = () => {
         const totalSeconds = hours * 3600 + minutes * 60 + seconds;
@@ -55,8 +55,10 @@ export function TimerSettings({ setTimerVisible, setTimerSeconds, setTimerOpacit
                 <input
                     type="number"
                     min="0"
-                    value={hours}
-                    onChange={(e) => setHours(Math.max(0, parseInt(e.target.value) || 0))}
+                    max="4"
+                    value={hours.toString()}
+                    onFocus={(e) => e.target.select()}
+                    onChange={(e) => setHours(Math.min(4, Math.max(0, parseInt(e.target.value) || 0)))}
                     className="border rounded px-2 py-1 w-16 text-center"
                 />
                 :
@@ -64,7 +66,8 @@ export function TimerSettings({ setTimerVisible, setTimerSeconds, setTimerOpacit
                     type="number"
                     min="0"
                     max="59"
-                    value={minutes}
+                    value={minutes.toString()}
+                    onFocus={(e) => e.target.select()}
                     onChange={(e) => setMinutes(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
                     className="border rounded px-2 py-1 w-16 text-center"
                 />
@@ -73,7 +76,8 @@ export function TimerSettings({ setTimerVisible, setTimerSeconds, setTimerOpacit
                     type="number"
                     min="0"
                     max="59"
-                    value={seconds}
+                    value={seconds.toString()}
+                    onFocus={(e) => e.target.select()}
                     onChange={(e) => setSeconds(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
                     className="border rounded px-2 py-1 w-16 text-center"
                 />
