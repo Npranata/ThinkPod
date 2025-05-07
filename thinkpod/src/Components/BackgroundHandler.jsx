@@ -180,12 +180,25 @@ const ChangeBackground = ({ videoUrl, setVideoUrl, token }) => {
   useEffect(() => {
     if (!videoUrl && token) {
       GetSavedBackground(token)
-        .then((savedVideo) => {
+        .then(async (savedVideo) => {
           if (savedVideo) {
             setVideoUrl(savedVideo);
+          } 
+          else{
+            const defaultBg = await new BackgroundHandler.getDefaultBackground();
+            if (defaultBg.length > 0) {
+              setVideoUrl(defaultBg[0][0]); // Set to first default video URL
+            }
           }
         })
-        .catch(console.error);
+        .catch(async (error) => {
+          console.error(error);
+          // Also try default on error
+          const defaultBg = await new BackgroundHandler().getDefaultBackground();
+          if (defaultBg.length > 0) {
+            setVideoUrl(defaultBg[0][0]);
+          }
+        });
     }
   }, [videoUrl, token, setVideoUrl]);
 
