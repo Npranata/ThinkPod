@@ -12,6 +12,11 @@ import { ToDoList } from './Components/ToDoList.jsx';
 
 
 function App() {
+   // Automatically remove the token when the page refreshes
+   useEffect(() => {
+    localStorage.removeItem('token');
+  }, []);
+
   /*These are states that will be updated in the website.*/
   const [showBackgroundVideo, setBackgroundVideo] = useState(null);
   const [showBackgroundThemeOptions, setBackgroundThemeOptions] = useState("All");
@@ -63,23 +68,21 @@ function App() {
   }, [showBgSelector]);
 
 
+  /* Loading the same default background unless the user logs in */
   useEffect(() => {
     async function loadUserBackground() {
+      const bgHandler = new BackgroundHandler();
+      const [[defaultVideoUrl]] = await bgHandler.getDefaultBackground();
+      setBackgroundVideo(defaultVideoUrl);
+
       if (token) {
         try {
           const savedVideo = await GetSavedBackground(token);
           if (savedVideo) {
             setBackgroundVideo(savedVideo);
-          } else {
-            const bgHandler = new BackgroundHandler();
-            const [[defaultVideoUrl]] = await bgHandler.getDefaultBackground();
-            setBackgroundVideo(defaultVideoUrl);
-          }
+          } 
         } catch (e) {
           console.error("Error fetching saved background, loading default instead.", e);
-          const bgHandler = new BackgroundHandler();
-          const [[defaultVideoUrl]] = await bgHandler.getDefaultBackground();
-          setBackgroundVideo(defaultVideoUrl);
         }
       }
     }
@@ -91,6 +94,20 @@ function App() {
     setShowTimerSettings(prev => !prev);
   };
 
+  const timerRef = useRef();
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (timerRef.current && !timerRef.current.contains(event.target)) {
+        setShowTimerSettings(false);
+      }
+    }
+    if (showTimerSettings) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showTimerSettings]);
 
   /* Todo List states */
   const [showTasks, setTasks] = useState([]);
@@ -123,7 +140,7 @@ function App() {
       {/* Timer Settings */}
       {showTimerSettings && (
 
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex justify-center items-center rounded-3xl shadow-xl animate-fadeIn">
+        <div ref={timerRef} className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex justify-center items-center rounded-3xl shadow-xl animate-fadeIn">
           <TimerSettings
             setTimerVisible={setTimerVisible}
             setTimerOpacity={setTimerOpacity}
