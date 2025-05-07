@@ -46,6 +46,7 @@ function App() {
   };
   }, [showAccountProfile]);
 
+
   const backgroundRef = useRef();
   useEffect(() => {
   const handleClickOutside = (event) =>  {
@@ -194,7 +195,7 @@ function App() {
         {`fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm 
         ${showAccountProfile ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} 
         transition-opacity duration-300`}>
-        <div className="login_window" ref={loginRef} >
+        <div className="login_window" ref={loginRef}>
           <Login />
         </div>
       </div>
