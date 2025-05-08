@@ -10,14 +10,19 @@ import { AboutUs } from './Components/AboutUs.jsx';
 import { TimerSettings } from './Components/TimerSettings';
 import { ToDoList } from './Components/ToDoList.jsx';
 
-
+/**
+ * Main function that runs the whole web application.
+ * It Handles state management of UI components and pop ups.
+ * H
+ * @returns {JSX.Element} - JSX structure of the web application.
+ */
 function App() {
    // Automatically remove the token when the page refreshes
    useEffect(() => {
     localStorage.removeItem('token');
   }, []);
 
-  /*These are states that will be updated in the website.*/
+  // These are states that will be updated in the website.
   const [showBackgroundVideo, setBackgroundVideo] = useState(null);
   const [showBackgroundThemeOptions, setBackgroundThemeOptions] = useState("All");
   const [showTimer, setShowTimer] = useState(false);
@@ -35,7 +40,7 @@ function App() {
   const [mode, setMode] = useState('study');
   const token = localStorage.getItem("token");
 
-  // allows for the user to click anywhere outside the window to have the login pop up disappear
+  // Allows for the user to click anywhere outside the window to have the login pop up disappear
   const loginRef = useRef();
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -52,6 +57,7 @@ function App() {
   }, [showAccountProfile]);
 
 
+  // Allows user to click outside of the background window to close the window
   const backgroundRef = useRef();
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -68,7 +74,7 @@ function App() {
   }, [showBgSelector]);
 
 
-  /* Loading the same default background unless the user logs in */
+  // Loading the same default background unless the user logs in
   useEffect(() => {
     async function loadUserBackground() {
       const bgHandler = new BackgroundHandler();
@@ -89,11 +95,13 @@ function App() {
     loadUserBackground();
   }, [token]);
 
-
+  // Display timer settings
   const toggleTimerSettings = () => {
     setShowTimerSettings(prev => !prev);
   };
 
+
+  // Allows user to close timer settings window when user clicks outside of the timer window.
   const timerRef = useRef();
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -109,7 +117,7 @@ function App() {
     };
   }, [showTimerSettings]);
 
-  /* Todo List states */
+  // Todo List states
   const [showTasks, setTasks] = useState([]);
   const [showCheckMark, setCheckMark] = useState([]);
 

@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from "react";
 
+/**
+ * TimerSettings is a React component that allows users to configure timer settings 
+ * for both study and break sessions. Users can input custom durations and set the 
+ * timer's opacity. These settings are applied to the global timer state.
+ * 
+ * @param {Object} props
+ * @param {Function} props.setTimerVisible - Toggles the visibility of the timer.
+ * @param {Function} props.setTimerSeconds - Sets the timer duration in seconds.
+ * @param {Function} props.setTimerOpacity - Sets the opacity level for the timer UI.
+ * @param {string} props.mode - The current timer mode, either 'study' or 'break'.
+ * @param {Function} props.setMode - Sets the current timer mode.
+ *
+ * @returns {JSX.Element} A settings panel for customizing timer durations and opacity.
+ */
 export function TimerSettings({ setTimerVisible, setTimerSeconds, setTimerOpacity, mode, setMode }) {
     const [studySeconds, setStudySeconds] = useState(1500); // 25 minutes
     const [breakSeconds, setBreakSeconds] = useState(300);  // 5 minutes
