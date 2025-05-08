@@ -21,36 +21,38 @@ cd flaskAPI
 ```bash 
   python3 -m venv <name_of_virtualenv>
   source <name_of_virtualenv>/bin/activate
-  pip install flask_cors
-  pip install flask-cors python-dotenv
-  pip install Flask flask-jwt-extended
-  pip install flask flask-sqlalchemy
 ```
-
 **Windows**
 ```bash 
-  virtualenv virtualEnvName
+  virtualenv  <venvname>
   <venvname>\Scripts\activate
-  pip install flask_cors
-  pip install flask-cors python-dotenv
 ```
-
 Note: **Windows** have a security exception where it disables running scripts on the system. You will need to disable this. 
-
 Warning: It is dangerous to do this, so it would be best to restrict running scripts once you are done.
 
 In Windows Powershell:
- 
   ``` bash
   … Get-ExecutionPolicy  #checks if running scripts is restricted or not
   … Set-ExecutionPolicy Unrestricted  #this unrestricts the system that prevents running scripts
   ```
 
-  To re-enable the restriction:
-
+To re-enable the restriction:
 ``` bash
   … Set-ExecutionPolicy Restricted
   ```
+
+While in the virtual environment install 
+```bash 
+  pip install flask_cors
+  pip install flask-cors python-dotenv
+  pip install Flask flask-jwt-extended
+  pip install flask flask-sqlalchemy
+  pip install psycopg2-binary
+  pip install gunicorn
+```
+There is a requirement.txt as well if any errors regarding packages occur, please ensure all
+packages in the file are installed. 
+
 Another thing to check is the `package.json`:
   There are different Unix-style commands for both Windows and Mac; `./` is not recognized by Windows, so you would have to do `\\`
 
