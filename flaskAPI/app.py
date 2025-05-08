@@ -1,3 +1,4 @@
+#importing the necessary libraries
 from flask import Flask, request,jsonify
 from flask_cors import CORS
 import os 
@@ -8,33 +9,38 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 
-#needed to make sure that the environment variables like CLIENT_URL load
+#load environment variables from .env file
 load_dotenv()
 
+#initialize flask app 
 app = Flask(__name__)
 
-#for deployment the URL needs to be set to the actual domain name!!
+#Get client URL from env variables
 CLIENT_URL = os.getenv("CLIENT_URL")
 
-#setting up CORS
-CORS(app, origins="*", supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers=["Authorization", "Content-Type"])
+#Configure CORS tp allow cross-origin request 
+CORS(
+    app,
+    origins="*", 
+    supports_credentials=True, 
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
+    allow_headers=["Authorization", "Content-Type"])
 
 #Configuring a PostgresSQL Database from the .env file
 DATABASE_URL = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-#Initializing JWT
+#Configure JWT for user authentication
 app.config["JWT_SECRET_KEY"] =os.getenv("JWT_SECRET_KEY", "super-secret")
 jwt = JWTManager(app)
-
 
 #Initialize SQLAlchemy with Declarative Base
 class Base(DeclarativeBase):pass
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
-#Defining the User model using 'Mapped" and "mapped_column"
+#Defining the User model
 class User(db.Model):
     __tablename__ = "users"
     username: Mapped[str] = mapped_column(String, primary_key=True)
@@ -44,48 +50,40 @@ class User(db.Model):
     studyTimerLength:Mapped[int] = mapped_column(Integer, nullable=True)
     breakTimerLength:Mapped[int] = mapped_column(Integer, nullable=True)
 
-#DATABASE UTLILTIY CLASS 
+#Utility class for handling database operations
 class Database:
-    """ Adding a new user to the database"""
+    """ Adding a new user with hashed password to the database"""
     def createUser(self, username:str, password:str):
         hashed_password = generate_password_hash(password)
         newUser = User(username=username, password=hashed_password)
         db.session.add(newUser)
         db.session.commit() 
 
-    """ Retrieving all the informations of a user via their username"""
+    """ Retrieving a user via their username"""
     def get(self, username: str):
         if username:
             return db.session.get(User, username)
-      
+    
+    """ Update users background preferences"""
     def updateBackgroundPreferences(self, username: str, backgroundURL: str):
         user = self.get(username)
         if user: 
             user.backgroundPreference = backgroundURL
             db.session.commit() 
 
-    def updateToDoList(self, username:str, toDoList:JSON):
-        user = self.get(username)
-        if user:
-            user.toDoList = toDoList
-            db.session.commit()
-
-    def updateTimer(self, username:str, studyTimer:int,  breakTimer: int):
-        user = self.get(username)
-        if user:
-            user.studyTimerLength = studyTimer
-            user.breakTimerLength = breakTimer
-            db.session.commit()
-
-
-#Creating a database manager
+#Instantiate a database manager
 db_manager = Database() 
 
-#creates database table if it doesn't exist
+#Create a database table if it doesn't exist
 with app.app_context():
     db.create_all()
 
-#ROUTES
+# ------- ROUTES ------ #
+
+"""
+    Log in by verifying credentials
+    Returns a JWT access token on success
+"""
 @app.route('/login',methods=['POST'])
 def login():
     username = request.json.get('username', '')
@@ -98,6 +96,9 @@ def login():
         return response
     return jsonify({"message":"Invalid credentials"}), 401
 
+"""
+Creates a new user account but only if the username is not already taken
+"""
 @app.route('/createAccount', methods=['POST'])
 def createAccount():
     data = request.get_json()
@@ -109,6 +110,12 @@ def createAccount():
     db_manager.createUser(username=username, password=password)
     return jsonify({"message": "Account created successfully"}), 201
 
+
+"""
+Uses two HTTP methods and varies action depending on method recieved
+- GET: Return the background preference of the logged-in user
+- PUT: Update the background preference of the logged-in user
+"""
 @app.route('/background', methods=['GET', 'PUT'])
 @jwt_required()
 def background_preference():
@@ -123,8 +130,8 @@ def background_preference():
         background = data.get("backgroundPreference")
         db_manager.updateBackgroundPreferences(username, background)
         return jsonify({"message": "Background updated successfully"})
-    
 
+# Entry point for running the app locally
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
