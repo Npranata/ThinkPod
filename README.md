@@ -28,6 +28,7 @@ cd flaskAPI
   <venvname>\Scripts\activate
 ```
 Note: **Windows** have a security exception where it disables running scripts on the system. You will need to disable this. 
+
 Warning: It is dangerous to do this, so it would be best to restrict running scripts once you are done.
 
 In Windows Powershell:
@@ -41,7 +42,7 @@ To re-enable the restriction:
   … Set-ExecutionPolicy Restricted
   ```
 
-While in the virtual environment install 
+**While in the virtual environment install**
 ```bash 
   pip install flask_cors
   pip install flask-cors python-dotenv
@@ -78,3 +79,13 @@ While still in /thinkpod
 ``` 
 
 
+## Deployment 
+
+[OUR LIVE WEBSITE!!!](https://thinkpod.vercel.app/)
+
+### 1. Backend (Render)
+The backend is deployed via Render with the database being hosted on Neon
+
+### 2. Frontend (Vercel)
+Our frontend is deployed via Vercel and access the backend through the link provided
+by Render 
