@@ -27,10 +27,11 @@ cd flaskAPI
 ```
 
 **Windows**
+```bash 
   <venvname>\Scripts\activate
   pip install flask_cors
   pip install flask-cors python-dotenv
-
+```
 
 Note: **Windows** have a security exception where it disables running scripts on the system. You will need to disable this. 
 
@@ -45,8 +46,9 @@ In Windows Powershell:
 
   To re-enable the restriction:
 
+``` bash
   … Set-ExecutionPolicy Restricted
-
+  ```
 Another thing to check is the `package.json`:
   There are different Unix-style commands for both Windows and Mac; `./` is not recognized by Windows, so you would have to do `\\`
 
