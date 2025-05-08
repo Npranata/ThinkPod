@@ -13,13 +13,14 @@ Make sure to have these packages installed if you wish to run this repo on your 
 
 ### 1. Backend Setup (Flask API)
 
-Navigate to the Flask backend directory:
+Navigate to the Flask backend directory and create a virtual environment:
 ```bash 
 cd flaskAPI 
 ``` 
 **Mac**
 ```bash 
-  source venv/bin/activate
+  python3 -m venv <name_of_virtualenv>
+  source <name_of_virtualenv>/bin/activate
   pip install flask_cors
   pip install flask-cors python-dotenv
   pip install Flask flask-jwt-extended
@@ -28,6 +29,7 @@ cd flaskAPI
 
 **Windows**
 ```bash 
+  virtualenv virtualEnvName
   <venvname>\Scripts\activate
   pip install flask_cors
   pip install flask-cors python-dotenv
