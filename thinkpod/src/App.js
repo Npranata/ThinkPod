@@ -73,7 +73,6 @@ function App() {
     };
   }, [showBgSelector]);
 
-
   // Loading the same default background unless the user logs in
   useEffect(() => {
     async function loadUserBackground() {
